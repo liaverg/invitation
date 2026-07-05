@@ -1,1 +1,65 @@
-Test test
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taufe von Lucas</title>
+    <!-- Tailwind (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React + ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel to transform the JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script>
+      // Load the JSX component from its file, transform it, and render it.
+      (async () => {
+        const root = document.getElementById("root");
+        try {
+          const res = await fetch("./tauf_website_vorlage.jsx");
+          if (!res.ok) {
+            throw new Error("HTTP " + res.status + " beim Laden der JSX-Datei");
+          }
+          let source = await res.text();
+
+          // Strip the ES module `export default` so we can eval the component
+          // in a plain script scope and grab the function by name.
+          source = source.replace(
+            /export\s+default\s+function\s+BaptismWebsite/,
+            "function BaptismWebsite"
+          );
+
+          const { code } = Babel.transform(source, {
+            presets: ["react"],
+          });
+
+          // Evaluate the transformed code and return the component.
+          const BaptismWebsite = new Function(
+            "React",
+            code + "\nreturn BaptismWebsite;"
+          )(React);
+
+          ReactDOM.createRoot(root).render(
+            React.createElement(BaptismWebsite)
+          );
+        } catch (err) {
+          root.innerHTML =
+            '<pre style="padding:2rem;color:#b91c1c;font-family:monospace;white-space:pre-wrap;">' +
+            "Fehler beim Laden der Seite:\n" +
+            (err && err.message ? err.message : String(err)) +
+            "</pre>";
+          console.error(err);
+        }
+      })();
+    </script>
+  </body>
+</html>
