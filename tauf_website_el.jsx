@@ -226,7 +226,9 @@ export default function BaptismWebsite() {
               loc.name +
               '<br><a href="' +
               link +
-              '" target="_blank" rel="noopener">Άνοιγμα στο Google Maps →</a>'
+              '" target="_blank" rel="noopener" ' +
+              'style="display:inline-block;margin-top:6px;color:#183b78;font-weight:600;text-decoration:none;white-space:nowrap;">' +
+              "📍 Χάρτης</a>"
           );
       });
 
