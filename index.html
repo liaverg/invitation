@@ -38,8 +38,11 @@
             "function BaptismWebsite"
           );
 
+          // Use the *classic* JSX runtime so the output calls the global
+          // React.createElement instead of emitting an `import ... from
+          // "react/jsx-runtime"` line (which fails inside new Function()).
           const { code } = Babel.transform(source, {
-            presets: ["react"],
+            presets: [["react", { runtime: "classic" }]],
           });
 
           // Evaluate the transformed code and return the component.
