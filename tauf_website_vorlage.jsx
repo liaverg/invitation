@@ -123,6 +123,99 @@ export default function BaptismWebsite() {
   </svg>
 );
 
+  // Alle Orte auf einer Karte. Koordinaten bei Bedarf anpassen: [Breite, Länge].
+  // Das Kloster ist exakt; die übrigen Pins liegen nah dran – der Link im Popup
+  // führt per Namenssuche immer zum richtigen Ort in Google Maps.
+  const locations = [
+    {
+      label: "Taufe",
+      name: "Kloster Osios Loukas",
+      coords: [38.39515, 22.74382],
+      query: "Osios Loukas Monastery",
+    },
+    {
+      label: "Feier",
+      name: "Valaouras, Poseidonos 90, Antikyra",
+      coords: [38.3778, 22.639],
+      query: "Valaouras Antikyra",
+    },
+    {
+      label: "Feier am Vorabend",
+      name: "Buddha, Agios Isidoros",
+      coords: [38.363, 22.616],
+      query: "Buddha Agios Isidoros Antikyra",
+    },
+    {
+      label: "Übernachtung",
+      name: "Antikyra Beach Hotel",
+      coords: [38.3798, 22.6369],
+      query: "Antikyra Beach Hotel Antikyra",
+    },
+    {
+      label: "Ausflug",
+      name: "Galaxidi",
+      coords: [38.3778, 22.3789],
+      query: "Galaxidi Greece",
+    },
+    {
+      label: "Ausflug",
+      name: "Delphi",
+      coords: [38.4825, 22.5005],
+      query: "Delphi Archaeological Site",
+    },
+    {
+      label: "Ausflug",
+      name: "Distomo",
+      coords: [38.4267, 22.6689],
+      query: "Distomo Greece",
+    },
+  ];
+
+  // Interaktive Karte (Leaflet + OpenStreetMap, kein API-Schlüssel nötig).
+  const LocationsMap = ({ locations }) => {
+    const containerRef = React.useRef(null);
+
+    React.useEffect(() => {
+      if (!containerRef.current || typeof L === "undefined") return;
+
+      const map = L.map(containerRef.current, { scrollWheelZoom: false });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap-Mitwirkende",
+      }).addTo(map);
+
+      const markers = locations.map((loc) => {
+        const link =
+          "https://www.google.com/maps/search/?api=1&query=" +
+          encodeURIComponent(loc.query);
+        return L.marker(loc.coords)
+          .addTo(map)
+          .bindPopup(
+            "<strong>" +
+              loc.label +
+              "</strong><br>" +
+              loc.name +
+              '<br><a href="' +
+              link +
+              '" target="_blank" rel="noopener">In Google Maps öffnen →</a>'
+          );
+      });
+
+      if (markers.length) {
+        map.fitBounds(L.featureGroup(markers).getBounds().pad(0.25));
+      }
+
+      return () => map.remove();
+    }, [locations]);
+
+    return (
+      <div
+        ref={containerRef}
+        className="mt-6 h-80 w-full overflow-hidden rounded-2xl border border-[#b9cde7]"
+      />
+    );
+  };
+
   const cardClass =
     "rounded-[2rem] border border-[#b9cde7] bg-white/50 shadow-sm backdrop-blur-sm";
 
@@ -335,6 +428,14 @@ export default function BaptismWebsite() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold tracking-tight">Alle Orte auf einen Blick</h2>
+          <p className="mt-2 text-[#183b78]/70">
+            Tippt auf einen Pin für Details und die Route in Google Maps.
+          </p>
+          <LocationsMap locations={locations} />
         </div>
       </section>
     </div>

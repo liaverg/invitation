@@ -123,6 +123,99 @@ export default function BaptismWebsite() {
   </svg>
 );
 
+  // Όλες οι τοποθεσίες σε έναν χάρτη. Προσαρμόστε τις συντεταγμένες αν χρειάζεται:
+  // [πλάτος, μήκος]. Το μοναστήρι είναι ακριβές· τα υπόλοιπα σημεία είναι κοντά –
+  // ο σύνδεσμος στο αναδυόμενο παράθυρο οδηγεί πάντα στο σωστό σημείο στο Google Maps.
+  const locations = [
+    {
+      label: "Βάφτιση",
+      name: "Μονή Οσίου Λουκά",
+      coords: [38.39515, 22.74382],
+      query: "Osios Loukas Monastery",
+    },
+    {
+      label: "Δεξίωση",
+      name: "Valaouras, Poseidonos 90, Antikyra",
+      coords: [38.3778, 22.639],
+      query: "Valaouras Antikyra",
+    },
+    {
+      label: "Γιορτή την παραμονή",
+      name: "Buddha, Άγιος Ισίδωρος",
+      coords: [38.363, 22.616],
+      query: "Buddha Agios Isidoros Antikyra",
+    },
+    {
+      label: "Διαμονή",
+      name: "Antikyra Beach Hotel",
+      coords: [38.3798, 22.6369],
+      query: "Antikyra Beach Hotel Antikyra",
+    },
+    {
+      label: "Εκδρομή",
+      name: "Γαλαξίδι",
+      coords: [38.3778, 22.3789],
+      query: "Galaxidi Greece",
+    },
+    {
+      label: "Εκδρομή",
+      name: "Δελφοί",
+      coords: [38.4825, 22.5005],
+      query: "Delphi Archaeological Site",
+    },
+    {
+      label: "Εκδρομή",
+      name: "Δίστομο",
+      coords: [38.4267, 22.6689],
+      query: "Distomo Greece",
+    },
+  ];
+
+  // Διαδραστικός χάρτης (Leaflet + OpenStreetMap, χωρίς κλειδί API).
+  const LocationsMap = ({ locations }) => {
+    const containerRef = React.useRef(null);
+
+    React.useEffect(() => {
+      if (!containerRef.current || typeof L === "undefined") return;
+
+      const map = L.map(containerRef.current, { scrollWheelZoom: false });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap",
+      }).addTo(map);
+
+      const markers = locations.map((loc) => {
+        const link =
+          "https://www.google.com/maps/search/?api=1&query=" +
+          encodeURIComponent(loc.query);
+        return L.marker(loc.coords)
+          .addTo(map)
+          .bindPopup(
+            "<strong>" +
+              loc.label +
+              "</strong><br>" +
+              loc.name +
+              '<br><a href="' +
+              link +
+              '" target="_blank" rel="noopener">Άνοιγμα στο Google Maps →</a>'
+          );
+      });
+
+      if (markers.length) {
+        map.fitBounds(L.featureGroup(markers).getBounds().pad(0.25));
+      }
+
+      return () => map.remove();
+    }, [locations]);
+
+    return (
+      <div
+        ref={containerRef}
+        className="mt-6 h-80 w-full overflow-hidden rounded-2xl border border-[#b9cde7]"
+      />
+    );
+  };
+
   const cardClass =
     "rounded-[2rem] border border-[#b9cde7] bg-white/50 shadow-sm backdrop-blur-sm";
 
@@ -335,6 +428,14 @@ export default function BaptismWebsite() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold tracking-tight">Όλες οι τοποθεσίες με μια ματιά</h2>
+          <p className="mt-2 text-[#183b78]/70">
+            Πατήστε σε ένα σημείο για λεπτομέρειες και διαδρομή στο Google Maps.
+          </p>
+          <LocationsMap locations={locations} />
         </div>
       </section>
     </div>
