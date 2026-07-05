@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Taufe von Lucas · Βάφτιση του Λουκά</title>
+    <title>Taufe von Lucas</title>
     <!-- Tailwind (Play CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Leaflet (interactive locations map, no API key required) -->
@@ -70,6 +70,12 @@
         el: "./tauf_website_el.jsx",
       };
 
+      // Browser-tab title per language (applied on each render()).
+      const TITLES = {
+        de: "Taufe von Lucas",
+        el: "Βάφτιση του Λουκά",
+      };
+
       const root = document.getElementById("root");
       const reactRoot = ReactDOM.createRoot(root);
       const buttons = Array.from(
@@ -115,6 +121,7 @@
           const BaptismWebsite = await loadComponent(lang);
           reactRoot.render(React.createElement(BaptismWebsite));
           document.documentElement.lang = lang;
+          document.title = TITLES[lang] || document.title;
           try {
             localStorage.setItem("lang", lang);
           } catch (e) {

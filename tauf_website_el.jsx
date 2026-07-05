@@ -381,38 +381,6 @@ export default function BaptismWebsite() {
         </div>
       </section>
 
-      <section className="border-y border-[#b9cde7] bg-[#d7e6f6]/80">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#183b78]/80">
-              Για τους καλεσμένους μας
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-              Δραστηριότητες στη γύρω περιοχή
-            </h2>
-            <p className="mt-3 text-[#183b78]/60">~ ~ ~</p>
-            <p className="mt-4 text-lg text-[#183b78]/80">
-              Για όσους έρχονται από μακριά ή θα περάσουν το σαββατοκύριακο στην περιοχή, συγκεντρώσαμε εδώ μερικές όμορφες ιδέες.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {activities.map((activity) => (
-              <div
-                key={activity.title}
-                className="rounded-[2rem] border border-[#b9cde7] bg-white/45 p-6 shadow-sm backdrop-blur-sm"
-              >
-                <div className="text-2xl text-[#183b78]">{activity.icon}</div>
-                <h3 className="mt-3 text-xl font-semibold">{activity.title}</h3>
-                <p className="mt-3 leading-7 text-[#183b78]/80">
-                  {activity.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid max-w-4xl gap-6 lg:grid-cols-2">
           <div className={`${cardClass} p-6`}>
